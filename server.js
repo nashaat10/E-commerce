@@ -16,6 +16,7 @@ mongoose
   })
   .catch((err) => {
     console.error(`database connection error: ${err}`);
+    process.exit(1);
   });
 
 const app = express();
