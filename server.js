@@ -1,31 +1,23 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-const mongoose = require("mongoose");
+const connectDB = require("./E-commerce/config/database");
 
 dotenv.config({ path: "config.env" });
 
-// Connect to database
-mongoose
-  .connect(process.env.DB_URI)
-  .then(() => {
-    console.log("Database connected");
-  })
-  .catch((err) => {
-    console.error(`database connection error: ${err}`);
-    process.exit(1);
-  });
-
+//create express app
 const app = express();
+
+// connect to database
+connectDB();
+
+// middleware
+app.use(express.json());
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
   console.log(`mode is ${process.env.NODE_ENV}`);
 }
-
-app.get("/", (req, res) => {
-  res.status(200).send("Hello World");
-});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
