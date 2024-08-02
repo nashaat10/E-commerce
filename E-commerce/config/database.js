@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// database connection
 const connectDB = () => {
   mongoose
     .connect(process.env.DB_URI)
