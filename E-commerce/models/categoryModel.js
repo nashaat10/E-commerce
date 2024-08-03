@@ -10,12 +10,14 @@ const categorySchema = new mongoose.Schema(
       minLength: [3, "Category name must be at least 3 characters"],
       maxLength: [32, "Category name must be at most 32 characters"],
     },
+    // slug used for SEO friendly URL
     slug: {
       type: "string",
       lowercase: true,
     },
+    images: String,
   },
-  { timestamps: true }
+  { timestamps: true } // createdAt, updatedAt
 );
 
 const categoryModel = mongoose.model("Category", categorySchema);
