@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const AppError = require("./E-commerce/utils/appError");
 const globalErrorHandler = require("./E-commerce/controllers/errorController");
+const categoryRouter = require("./E-commerce/routes/categoryRoute");
 
 const app = express();
 
@@ -14,8 +15,7 @@ if (process.env.NODE_ENV === "development") {
 app.use(express.json());
 
 // Route
-app.use(express.json());
-
+app.use("/api/v1/category", categoryRouter);
 // all is used to handle all http requests and responses from the server
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
