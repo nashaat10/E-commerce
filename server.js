@@ -1,7 +1,7 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
-const app = require("./app");
+import app from "./app.js";
+import express from "express";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
 
 dotenv.config({ path: "./config.env" });
 
@@ -13,6 +13,15 @@ mongoose.connect(DB).then(() => {
 });
 // port
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+const server = app.listen(port, () => {
+  console.log(`app is listening on port ${port}`);
+});
+
+// handel unhandledRejection like database connection
+process.on("unhandledRejection", (err) => {
+  console.log(err.name, err.message);
+  //server.close() give the server time to finish all the request that are still being handled then the server killed
+  server.close(() => {
+    process.exit(1);
+  });
 });
