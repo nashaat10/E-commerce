@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === "development") {
 app.use(express.json());
 
 // Route
-app.use("/api/v1/category", categoryRouter);
+app.use("/api/v1/categories", categoryRouter);
 // all is used to handle all http requests and responses from the server
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
