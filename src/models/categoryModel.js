@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-const slugify = require("slugify");
-
+import slugify from "slugify";
 const categorySchema = new mongoose.Schema(
   {
     name: {
@@ -14,27 +13,23 @@ const categorySchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
-    type: mongoose.Schema.ObjectId,
-    products: {
-      ref: "Product",
-    },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
 );
-tourSchema.pre("save", function (next) {
+categorySchema.pre("save", function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
 
-categorySchema.pre(/^find/, function (next) {
-  this.populate({
-    path: "products",
-  });
-  next();
-});
+// categorySchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: "products",
+//   });
+//   next();
+// });
 
 const Category = mongoose.model("Category", categorySchema);
 

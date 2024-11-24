@@ -1,4 +1,3 @@
-import express from "express";
 import catchAsync from "../utils/catchAsync.js";
 import AppError from "../utils/AppError.js";
 import User from "../Models/userModel.js";
