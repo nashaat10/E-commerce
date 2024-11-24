@@ -1,6 +1,43 @@
 import Product from "../models/productModel.js";
 import AppError from "../utils/AppError.js";
 import catchAsync from "../utils/catchAsync.js";
+import multer from "multer";
+import sharp from "sharp";
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new AppError("Not an image! Please upload only images.", 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+export const uploadTourImage = upload.fields([{ name: "images", maxCount: 3 }]);
+
+export const resizeProductImages = catchAsync(async (req, res, next) => {
+  if (!req.files.images) return next();
+  req.body.images = [];
+  await Promise.all(
+    req.files.images.map(async (file, i) => {
+      const filename = `product-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+      await sharp(file.buffer)
+        .resize(2000, 1333)
+        .toFormat("jpeg")
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/products/${filename}`);
+
+      req.body.images.push(filename);
+    })
+  );
+  next();
+});
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
   const products = await Product.find();

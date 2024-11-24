@@ -11,8 +11,13 @@ router
   .get(productController.getAllProducts);
 
 router
-  .route("/")
+  .route("/:id")
   .get(productController.getProduct)
-  .patch(authController.restrictTo("admin"), productController.updateProduct)
+  .patch(
+    authController.restrictTo("admin"),
+    productController.uploadTourImage,
+    productController.resizeProductImages,
+    productController.updateProduct
+  )
   .delete(authController.restrictTo("admin"), productController.deleteProduct);
 export default router;
