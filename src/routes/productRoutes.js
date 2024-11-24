@@ -1,12 +1,18 @@
 import express from "express";
-import { protect } from "../Controllers/authController.js";
-import {
-  createProduct,
-  getAllProducts,
-} from "../controllers/productController.js";
+import * as authController from "../Controllers/authController.js";
+import * as productController from "../controllers/productController.js";
 
 const router = express.Router({ mergeParams: true });
+router.use(authController.protect);
 
-router.route("/").post(protect, createProduct).get(protect, getAllProducts);
+router
+  .route("/")
+  .post(productController.createProduct)
+  .get(productController.getAllProducts);
 
+router
+  .route("/")
+  .get(productController.getProduct)
+  .patch(productController.updateProduct)
+  .delete(productController.deleteProduct);
 export default router;
