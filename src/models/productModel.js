@@ -50,9 +50,12 @@ const productSchema = new mongoose.Schema(
   }
 );
 
+productSchema.index({ price: 1, ratingsAverage: 1 });
+
 productSchema.pre(/^find/, function (next) {
   this.populate({
     path: "category",
+    select: ("-__v", "-createdAt", "name"),
   });
   next();
 });

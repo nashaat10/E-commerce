@@ -1,6 +1,7 @@
 import Product from "../models/productModel.js";
 import AppError from "../utils/AppError.js";
 import catchAsync from "../utils/catchAsync.js";
+import APIFeatures from "../utils/apiFeatures.js";
 import multer from "multer";
 import sharp from "sharp";
 
@@ -40,7 +41,13 @@ export const resizeProductImages = catchAsync(async (req, res, next) => {
 });
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
-  const products = await Product.find();
+  const features = new APIFeatures(Product.find(), req.query)
+    .filter()
+    .pagination()
+    .sort()
+    .limitFields();
+
+  const products = await features.query;
   res.status(200).json({
     status: "success",
     result: products.length,
@@ -95,4 +102,22 @@ export const deleteProduct = catchAsync(async (req, res, next) => {
     status: "success",
     data: null,
   });
+});
+
+export const getProductStats = catchAsync(async (req, res, next) => {
+  const stats = await Product.aggregate([
+    {
+      $match: { ratingsAverage: { $gte: 4.5 } },
+    },
+    {
+      $group: {
+        _id: null,
+        numProducts: { $sum: 1 },
+        avgRating: { $avg: "$ratingsAverage" },
+        avgPrice: { $avg: "$price" },
+        minPrice: { $min: "$price" },
+        maxPrice: { $max: "$price" },
+      },
+    },
+  ]);
 });
