@@ -39,7 +39,7 @@ const productSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
-    Category: {
+    category: {
       type: mongoose.Schema.ObjectId,
       ref: "Category",
     },
@@ -49,6 +49,13 @@ const productSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "category",
+  });
+  next();
+});
 
 const Product = mongoose.model("Product", productSchema);
 
