@@ -7,12 +7,12 @@ router.use(authController.protect);
 
 router
   .route("/")
-  .post(productController.createProduct)
+  .post(authController.restrictTo("admin"), productController.createProduct)
   .get(productController.getAllProducts);
 
 router
   .route("/")
   .get(productController.getProduct)
-  .patch(productController.updateProduct)
-  .delete(productController.deleteProduct);
+  .patch(authController.restrictTo("admin"), productController.updateProduct)
+  .delete(authController.restrictTo("admin"), productController.deleteProduct);
 export default router;
