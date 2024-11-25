@@ -103,21 +103,3 @@ export const deleteProduct = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
-
-export const getProductStats = catchAsync(async (req, res, next) => {
-  const stats = await Product.aggregate([
-    {
-      $match: { ratingsAverage: { $gte: 4.5 } },
-    },
-    {
-      $group: {
-        _id: null,
-        numProducts: { $sum: 1 },
-        avgRating: { $avg: "$ratingsAverage" },
-        avgPrice: { $avg: "$price" },
-        minPrice: { $min: "$price" },
-        maxPrice: { $max: "$price" },
-      },
-    },
-  ]);
-});
